@@ -1,12 +1,13 @@
 const express = require('express');
- const app = express();
+const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-app.use(express.static(__dirname)); // Serve the 'index.html'
+// Serve static files (adjust the path if needed)
+app.use(express.static(__dirname + '/public')); 
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/public/index.html');
 });
 
 io.on('connection', (socket) => {
@@ -17,7 +18,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('chat-message', (data) => {
-        io.emit('chat-message', data); // Broadcast to all clients
+        io.emit('chat-message', data); 
     });
 
     socket.on('disconnect', () => {
@@ -25,4 +26,7 @@ io.on('connection', (socket) => {
     });
 });
 
-http.listen(3000, () => console.log('Server listening on port 3000'));
+// Use an allowed port on Fleek (consult their documentation)
+const port = process.env.PORT || 8080; // Example 
+
+http.listen(port, () => console.log(`Server listening on port ${port}`));
